@@ -1,14 +1,14 @@
 //main.ts
 import "./style.css";
 import { UI } from "@peasy-lib/peasy-ui";
-import { Button } from "./components/button";
-import { Container } from "./components/container";
-import { Label } from "./components/label";
+import { MyButton } from "./components/button";
+import { MyContainer } from "./components/container";
+import { MyLabel } from "./components/label";
 
 const model = {
-  Button,
-  Container,
-  Label,
+  MyButton,
+  MyContainer,
+  MyLabel,
   mainContainer: {
     name: "myContainer",
     counter: 0,
@@ -17,7 +17,7 @@ const model = {
 const template = `
     <div class="App">
       Hello Peasy!!! 
-      <\${Container===mainContainer}>
+      <my-container pui="MyContainer === mainContainer"></my-container>
     </div>
   `;
 

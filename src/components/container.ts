@@ -1,81 +1,60 @@
-//button.ts
+//container.ts
 import { UI } from "@peasy-lib/peasy-ui";
 
-const defaultStyle = {
-  position: "relative",
-  width: "200px",
-  height: "250px",
-  border: "1px solid white",
-  margin: "25px",
-  padding: "10px",
-};
 const button1 = {
-  name: "addButton",
   buttonText: "Add One",
-  style: { top: "10px", left: "40px" },
+  style: "--top: 10px; --left: 40px;",
 };
 const button2 = {
-  name: "subButton",
   buttonText: "Minus One",
-  style: { "background-Color": "blue", top: "10px", left: "120px" },
+  style: "--background-color: blue; --top: 10px; --left: 120px;",
 };
 const label1 = {
-  name: "bobslabel",
-  style: { top: "100px", left: "50%", transform: "translateX(-50%)" },
+  style: "--top: 100px; --left: 50%; --transform: translateX(-50%);",
 };
 
-export class Container {
-  counter: number;
-  name: string;
+export class MyContainer {
   addButton;
   subButton;
   myLabel;
-  stylestring: string;
 
   static template: string = `
-  <div data-name="\${name}" style="\${stylestring}">
-    <\${Button===addButton}>
-    <\${Button===subButton}>
-    <\${Label===myLabel}>
+  <style>
+    :root {
+      position: var(--position, relative);
+      width: var(--width, 200px);
+      height: var(--height, 250px);
+      border: var(--border, 1px solid white);
+      margin: var(--margin, 25px);
+      padding: var(--padding, 10px);
+    }
+  </style>
+  <div>
+    <my-button pui="MyButton === addButton" style="\${addButton.style}"></my-button>
+    <my-button pui="MyButton === subButton" style="\${subButton.style}"></my-button>
+    <my-label pui="MyLabel === myLabel" style="\${myLabel.style}"></my-label>
   </div>`;
 
-  constructor(name: string, counter: number, style?: any) {
-    this.name = name;
-    this.counter = counter;
-    this.addButton = { props: button1, callback: this.incCounter };
-    this.subButton = { props: button2, callback: this.decCounter };
-    this.myLabel = { props: label1, value: this.counter };
-    this.stylestring = this.setDefaultStyle(style);
-  }
-
-  setDefaultStyle(passedStyle: string): string {
-    let stylestring: string = "";
-    let styles: any;
-    let styleArray: any;
-
-    if (passedStyle != undefined) styles = passedStyle;
-    else styles = defaultStyle;
-
-    styleArray = Object.keys(styles);
-    styleArray.forEach((style: any) => {
-      let styleVal = styles[style];
-      stylestring = stylestring.concat(`${style}:${styleVal};`);
-    });
-    return stylestring;
+  constructor(public state: { counter: number }) {
+    this.addButton = { ...button1, ...{ callback: this.incCounter } };
+    this.subButton = { ...button2, ...{ callback: this.decCounter } };
+    this.myLabel = Object.assign(this.state, label1);
   }
 
   incCounter = () => {
     console.log("count up");
-    this.counter += 1;
+    this.state.counter += 1;
+    console.log(this.state.counter);
   };
 
   decCounter = () => {
     console.log("count down");
-    this.counter -= 1;
+    this.state.counter -= 1;
+    console.log(this.state.counter);
   };
 
   static create(state: any) {
-    return new Container(state.name, state.counter, state.style);
+    return new MyContainer(state);
   }
 }
-UI.register("Container", Container); // Can be replaced with a property on invoking model
+UI.register("MyContainer", MyContainer); // Can be replaced with a property on invoking model
